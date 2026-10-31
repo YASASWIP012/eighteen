@@ -6,7 +6,7 @@ Minnesota, California and Illinois require money to be set aside for minors who 
 
 Eighteen checks the statute's arithmetic in zero knowledge against figures an oracle report has committed to, seals what a channel publicly said at the time, and holds a sponsor's payment until the report, a human reviewer and a proof all agree. A contradiction in public data stops the payout on-chain. The child's money stays with a bank or fiduciary, as Minnesota requires.
 
-[Watch the 81-second demo](https://github.com/YASASWIP012/eighteen/releases/download/v1.0/eighteen-demo.mp4).
+[Watch the 81-second demo](https://www.youtube.com/watch?v=HWd6H8QHFGk).
 
 ## Try it
 
