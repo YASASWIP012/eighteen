@@ -51,7 +51,7 @@ async function generate() {
   const started = performance.now();
   try {
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(
-      circuitInput(period, DEAL, PERIOD, fiduciary, statement),
+      circuitInput(period, DEAL, PERIOD, fiduciary, statement, { earningsSalt: 31n, factsDigest: 1n }),
       "zk/setaside.wasm",
       "zk/setaside.zkey",
     );
@@ -62,7 +62,7 @@ async function generate() {
     $("outcome").textContent =
       `${valid ? "Proof verified" : "Proof failed verification"} in ${elapsed} ms. ` +
       `A verifier sees only: commitment ${commitment}..., deal 1, period 1, statute ` +
-      `${period.jurisdiction}, and the fiduciary's public key. Earnings, content share, age and the deposit stay private.`;
+      `${period.jurisdiction}, the fiduciary's public key, and the oracle's earnings commitment. Earnings, content share, age and the deposit stay private.`;
   } catch {
     $("outcome").textContent =
       cents("deposit") !== cents("signed")
