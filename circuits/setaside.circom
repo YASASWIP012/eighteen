@@ -39,6 +39,7 @@ template SetAside() {
     signal input sigR8x;
     signal input sigR8y;
     signal input sigS;
+    signal input earningsSalt;
 
     signal input commitment;
     signal input dealId;
@@ -46,6 +47,8 @@ template SetAside() {
     signal input jurisdiction;
     signal input fiduciaryAx;
     signal input fiduciaryAy;
+    signal input earningsCommitment;
+    signal input factsDigest;
 
     component isCA = IsEqual();
     isCA.in[0] <== jurisdiction;
@@ -112,6 +115,16 @@ template SetAside() {
     signature.S <== sigS;
     signature.M <== statement.out;
 
+    // Earnings must open the commitment the oracle network reported for this
+    // period, so the proof can't run on a figure of the prover's choosing.
+    component earnings = Poseidon(2);
+    earnings.inputs[0] <== grossCents;
+    earnings.inputs[1] <== earningsSalt;
+    earnings.out === earningsCommitment;
+
+    // Ties the proof to the public facts sealed in the same report.
+    signal digestSquared <== factsDigest * factsDigest;
+
     component atThreshold = GreaterEqThan(16);
     atThreshold.in[0] <== contentBps;
     atThreshold.in[1] <== 3000;
@@ -163,4 +176,4 @@ template SetAside() {
     paid.out === 1;
 }
 
-component main { public [commitment, dealId, periodId, jurisdiction, fiduciaryAx, fiduciaryAy] } = SetAside();
+component main { public [commitment, dealId, periodId, jurisdiction, fiduciaryAx, fiduciaryAy, earningsCommitment, factsDigest] } = SetAside();

@@ -3,11 +3,19 @@ import { test } from "node:test";
 import hre from "hardhat";
 import { encodeAbiParameters, keccak256, stringToHex } from "viem";
 
-const channelRef = keccak256(stringToHex("demo-channel"));
+const SNARK_FIELD = 21888242871839275222246405745257275088548364400416034343698204186575808495617n;
 const digest = keccak256(stringToHex("facts"));
 const report = encodeAbiParameters(
-  [{ type: "bytes32" }, { type: "bytes32" }, { type: "uint32" }, { type: "uint32" }],
-  [channelRef, digest, 12, 1],
+  [
+    { type: "uint256" },
+    { type: "uint256" },
+    { type: "bytes32" },
+    { type: "bytes32" },
+    { type: "uint256" },
+    { type: "uint32" },
+    { type: "uint32" },
+  ],
+  [1n, 2n, keccak256(stringToHex("demo-channel")), digest, 77n, 12, 1],
 );
 
 test("stores a report from the forwarder and refuses anyone else", async () => {
@@ -21,10 +29,9 @@ test("stores a report from the forwarder and refuses anyone else", async () => {
   );
 
   await registry.write.onReport(["0x", report], { account: forwarder.account });
-  assert.equal(await registry.read.sealCount([channelRef]), 1n);
-
-  const seal = await registry.read.sealAt([channelRef, 0n]);
-  assert.equal(seal.digest, digest);
-  assert.equal(seal.videos, 12);
-  assert.equal(seal.contradictions, 1);
+  const stored = await registry.read.attestation([1n, 2n]);
+  assert.equal(stored.factsDigest, BigInt(digest) % SNARK_FIELD);
+  assert.equal(stored.earningsCommitment, 77n);
+  assert.equal(stored.videos, 12);
+  assert.equal(stored.contradictions, 1);
 });

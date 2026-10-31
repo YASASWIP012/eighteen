@@ -3,7 +3,9 @@ import {
   circuitInput,
   commit,
   type DepositStatement,
+  earningsCommitment,
   fiduciaryPublicKey,
+  type OracleReport,
   type PrivatePeriod,
   signDeposit,
 } from "./witness.ts";
@@ -11,7 +13,15 @@ import {
 const WASM = "demo/zk/setaside.wasm";
 const ZKEY = "demo/zk/setaside.zkey";
 
-export { commit, fiduciaryPublicKey, signDeposit, type DepositStatement, type PrivatePeriod };
+export {
+  commit,
+  earningsCommitment,
+  fiduciaryPublicKey,
+  signDeposit,
+  type DepositStatement,
+  type OracleReport,
+  type PrivatePeriod,
+};
 
 /** True when the circuit accepts this period, without the cost of a full proof. */
 export async function witnessHolds(
@@ -20,9 +30,10 @@ export async function witnessHolds(
   periodId: bigint,
   fiduciary: [bigint, bigint],
   statement: DepositStatement,
+  oracle: OracleReport,
 ): Promise<boolean> {
   try {
-    const input = circuitInput(p, dealId, periodId, fiduciary, statement);
+    const input = circuitInput(p, dealId, periodId, fiduciary, statement, oracle);
     await snarkjs.wtns.calculate(input, WASM, { type: "mem" });
     return true;
   } catch {
@@ -37,8 +48,9 @@ export async function prove(
   periodId: bigint,
   fiduciary: [bigint, bigint],
   statement: DepositStatement,
+  oracle: OracleReport,
 ) {
-  const input = circuitInput(p, dealId, periodId, fiduciary, statement);
+  const input = circuitInput(p, dealId, periodId, fiduciary, statement, oracle);
   const { proof, publicSignals } = await snarkjs.groth16.fullProve(input, WASM, ZKEY);
 
   return {

@@ -6,7 +6,10 @@ import { fiduciaryPublicKey, type PrivatePeriod, signDeposit, witnessHolds } fro
 const KEY = "sandbox-fiduciary";
 const fiduciary = fiduciaryPublicKey(KEY);
 const holds = (p: PrivatePeriod) =>
-  witnessHolds(p, 1n, 1n, fiduciary, signDeposit(KEY, p.depositedCents, 1n, 1n));
+  witnessHolds(p, 1n, 1n, fiduciary, signDeposit(KEY, p.depositedCents, 1n, 1n), {
+    earningsSalt: 5n,
+    factsDigest: 9n,
+  });
 
 // The circuit and the rule engine are two statements of the same law. They
 // must agree on the exact cent where a deposit stops being enough.

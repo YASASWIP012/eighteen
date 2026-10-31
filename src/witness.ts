@@ -2,6 +2,7 @@
 // both state the law the same way.
 
 import { Base8, mulPointEscalar, subOrder } from "@zk-kit/baby-jubjub";
+import { poseidon2 } from "poseidon-lite/poseidon2";
 import { poseidon3 } from "poseidon-lite/poseidon3";
 import { poseidon5 } from "poseidon-lite/poseidon5";
 import { poseidon7 } from "poseidon-lite/poseidon7";
@@ -23,6 +24,14 @@ export interface DepositStatement {
   r8: [bigint, bigint];
   s: bigint;
 }
+
+/** The figures the oracle report commits to for a period. */
+export interface OracleReport {
+  earningsSalt: bigint;
+  factsDigest: bigint;
+}
+
+export const earningsCommitment = (grossCents: bigint, salt: bigint) => poseidon2([grossCents, salt]);
 
 export const JURISDICTION_ID: Record<Jurisdiction, number> = { MN: 0, CA: 1, IL: 2 };
 
@@ -69,6 +78,7 @@ export function circuitInput(
   periodId: bigint,
   fiduciary: [bigint, bigint],
   statement: DepositStatement,
+  oracle: OracleReport,
 ) {
   const isCA = p.jurisdiction === "CA";
   const numerator = BigInt(p.contentBps) * (isCA ? 65n : 1n);
@@ -94,5 +104,8 @@ export function circuitInput(
     jurisdiction: JURISDICTION_ID[p.jurisdiction].toString(),
     fiduciaryAx: fiduciary[0].toString(),
     fiduciaryAy: fiduciary[1].toString(),
+    earningsSalt: oracle.earningsSalt.toString(),
+    earningsCommitment: earningsCommitment(p.grossCents, oracle.earningsSalt).toString(),
+    factsDigest: oracle.factsDigest.toString(),
   };
 }

@@ -21,6 +21,9 @@ export const configSchema = z.object({
   chainSelectorName: z.string(),
   registryAddress: z.string(),
   channelRef: z.string(),
+  dealId: z.number().int().positive(),
+  periodId: z.number().int().positive(),
+  earningsUrl: z.string(),
   declarations: z.array(z.object({ videoId: z.string(), declaredSeconds: z.number() })),
 });
 
@@ -30,6 +33,14 @@ interface Observation {
   digest: `0x${string}`;
   videos: number;
   contradictions: number;
+  earningsCommitment: string;
+}
+
+interface EarningsStatement {
+  dealId: number;
+  periodId: number;
+  /** Poseidon(grossCents, salt), computed by the source. Nodes never see the figure. */
+  earningsCommitment: string;
 }
 
 const PARTS = "snippet,contentDetails,status,paidProductPlacementDetails";
@@ -46,12 +57,21 @@ const observe =
     const response = requester.sendRequest({ url, method: "GET" }).result();
     if (!ok(response)) throw new Error(`YouTube returned ${response.statusCode}`);
 
+    const earningsResponse = requester.sendRequest({ url: config.earningsUrl, method: "GET" }).result();
+    if (!ok(earningsResponse)) throw new Error(`Earnings source returned ${earningsResponse.statusCode}`);
+
+    const statement = JSON.parse(text(earningsResponse)) as EarningsStatement;
+    if (statement.dealId !== config.dealId || statement.periodId !== config.periodId) {
+      throw new Error("Earnings statement is for a different deal or period");
+    }
+
     const videos = parseVideos(text(response));
     const declarations: Declaration[] = config.declarations;
     return {
       digest: digestFacts(toFacts(videos)),
       videos: videos.length,
       contradictions: findContradictions(videos, declarations, stageName).length,
+      earningsCommitment: statement.earningsCommitment,
     };
   };
 
@@ -73,10 +93,21 @@ export const onSchedule = (runtime: Runtime<Config>): string => {
   if (!network) throw new Error(`Unknown network ${config.chainSelectorName}`);
 
   const payload = encodeAbiParameters(
-    [{ type: "bytes32" }, { type: "bytes32" }, { type: "uint32" }, { type: "uint32" }],
     [
+      { type: "uint256" },
+      { type: "uint256" },
+      { type: "bytes32" },
+      { type: "bytes32" },
+      { type: "uint256" },
+      { type: "uint32" },
+      { type: "uint32" },
+    ],
+    [
+      BigInt(config.dealId),
+      BigInt(config.periodId),
       keccak256(stringToHex(config.channelRef)),
       observation.digest,
+      BigInt(observation.earningsCommitment),
       observation.videos,
       observation.contradictions,
     ],
@@ -87,7 +118,7 @@ export const onSchedule = (runtime: Runtime<Config>): string => {
     .writeReport(runtime, {
       receiver: config.registryAddress,
       report,
-      gasConfig: { gasLimit: "500000" },
+      gasConfig: { gasLimit: "1500000" },
     })
     .result();
 

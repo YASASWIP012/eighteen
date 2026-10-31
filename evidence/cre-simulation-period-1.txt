@@ -1,0 +1,22 @@
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: e978ec32f62daea403192bf8a05893cbb6ffe1959be776bd124631d386e9bd82
+  Config hash: 0b23e1091ceed2187e38610953df93925fc673bdc4b41994c06f254e89bb14d9
+2026-11-01T03:05:24Z [SIMULATION] Simulator Initialized
+
+2026-11-01T03:05:24Z [SIMULATION] Running trigger trigger=cron-trigger@1.0.0
+2026-11-01T03:05:37Z [USER LOG] Write: tx=2 receiver=0 hash=0xcb6fd8aebcef3a059e69eab8c70615ea99d52df9eb120500dbbcf39646f6d4e4
+2026-11-01T03:05:37Z [USER LOG] Sealed 1 videos, 1 contradictions
+
+✓ Workflow Simulation Result:
+"AdFVEbOJgT04uAbqmIqUp6n/ePuUyfWQJJqGhOVS1Cg="
+
+2026-11-01T03:05:37Z [SIMULATION] Execution finished signal received
+2026-11-01T03:05:37Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯

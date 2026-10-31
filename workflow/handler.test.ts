@@ -24,12 +24,17 @@ const body = JSON.stringify({
   ],
 });
 
+const statement = JSON.stringify({ dealId: 1, periodId: 1, earningsCommitment: "777" });
+
 const config: Config = {
   schedule: "0 0 * * * *",
   videoIds: ["vid1", "vid2"],
   chainSelectorName: "ethereum-testnet-sepolia",
   registryAddress: "0x0000000000000000000000000000000000000001",
   channelRef: "demo-channel",
+  dealId: 1,
+  periodId: 1,
+  earningsUrl: "https://earnings.test/statement",
   declarations: [
     { videoId: "vid1", declaredSeconds: 0 },
     { videoId: "vid2", declaredSeconds: 0 },
@@ -41,9 +46,22 @@ const secrets = new Map([
 ]);
 
 describe("workflow handler", () => {
+  test("refuses an earnings statement for another period", () => {
+    HttpActionsMock.testInstance().sendRequest = (request) => {
+      const payload = request.url.startsWith("https://earnings.test")
+        ? JSON.stringify({ dealId: 1, periodId: 2, earningsCommitment: "1" })
+        : body;
+      return { statusCode: 200, body: Buffer.from(payload).toString("base64") };
+    };
+    expect(() => onSchedule(newTestRuntime(secrets, {}, config) as never)).toThrow();
+  });
+
   test("seals facts and reports the contradiction on-chain", () => {
     let requested = "";
     HttpActionsMock.testInstance().sendRequest = (request) => {
+      if (request.url.startsWith("https://earnings.test")) {
+        return { statusCode: 200, body: Buffer.from(statement).toString("base64") };
+      }
       requested = request.url;
       return { statusCode: 200, body: Buffer.from(body).toString("base64") };
     };
@@ -61,11 +79,22 @@ describe("workflow handler", () => {
     expect(written).toBeDefined();
 
     // The report ends with the ABI payload: channel, digest, videos, contradictions.
-    const payload = `0x${Buffer.from(written as Uint8Array).toString("hex").slice(-256)}` as `0x${string}`;
-    const [, digest, videos, contradictions] = decodeAbiParameters(
-      [{ type: "bytes32" }, { type: "bytes32" }, { type: "uint32" }, { type: "uint32" }],
+    const payload = `0x${Buffer.from(written as Uint8Array).toString("hex").slice(-448)}` as `0x${string}`;
+    const [dealId, periodId, , digest, earnings, videos, contradictions] = decodeAbiParameters(
+      [
+        { type: "uint256" },
+        { type: "uint256" },
+        { type: "bytes32" },
+        { type: "bytes32" },
+        { type: "uint256" },
+        { type: "uint32" },
+        { type: "uint32" },
+      ],
       payload,
     );
+    expect(dealId).toBe(1n);
+    expect(periodId).toBe(1n);
+    expect(earnings).toBe(777n);
     expect(digest).toBe(digestFacts(toFacts(parseVideos(body))));
     expect(videos).toBe(2);
     expect(contradictions).toBe(1);

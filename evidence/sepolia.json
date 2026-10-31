@@ -1,35 +1,42 @@
 {
-  "network": "Sepolia",
-  "note": "Sample figures and a sandbox fiduciary key. The deployer also acts as brand and reviewer.",
+  "network": "sepolia",
+  "note": "Sample earnings from a sandbox endpoint, a sandbox fiduciary key, and one public test video with a stand-in stage name. The deployer also acts as brand and reviewer. Reports reach the registry through Chainlink's mock forwarder.",
   "contracts": {
-    "TestUSDC": "0x9bc46ab39015ef13ef195849b8f54798a0e75cb8",
-    "Groth16Verifier": "0xf16b82847183c39c35d99e523e84ae74441fc7ab",
-    "ProofGatedEscrow": "0xb841c226757482b439b400ed352d49758ba31461",
-    "FactsRegistry": "0x3f60b175ec86cccd0a84b185978a734a841f6b6b"
+    "TestUSDC": "0xc82079957fde78d48f5b2d92bd0a01c99b008432",
+    "Groth16Verifier": "0xe709731d9cbc23bc16f6ffa4b3f08bda92b09adc",
+    "FactsRegistry": "0xe19c4f3d8d399f03f1caf9d0ead70abc6a76891a",
+    "ProofGatedEscrow": "0x7444d7c2e2ddd4a075a7cb4c5d152b62016d02b1"
+  },
+  "reports": {
+    "contradiction": "0xcb6fd8aebcef3a059e69eab8c70615ea99d52df9eb120500dbbcf39646f6d4e4",
+    "consistent": "0xff33b7724cf8e243268b56f76deec0d98c2ac0e0f69bfe5c662e58e2e364e5f8"
   },
   "steps": [
     {
-      "label": "release while the review is open",
+      "label": "blocked: no oracle report yet",
       "status": "reverted",
-      "hash": "0xdec22f75e192cd813ca0650b57673730cb241ceb1d28cb415b25fe8180cccbed"
+      "hash": "0x3c271161759fa819fef719ad20797d37baa4a139a1900d3f7e55d16b04852260"
     },
     {
-      "label": "release with a proof for another period",
+      "label": "blocked: oracle reported a contradiction",
       "status": "reverted",
-      "hash": "0xccd73804318479291e7df35276e0be09d2c1c18da5d5661df54e4bd0629cee7f"
+      "hash": "0x63f00553aef2b0d7effdc14ac77ae77ea7379202b6381c25b6c54700183a175a"
     },
     {
-      "label": "release with a valid proof",
+      "label": "blocked: human review still open",
+      "status": "reverted",
+      "hash": "0x60262743a12ee79424c91448908d5d695d63c466efe6c627587de6fbc8303912"
+    },
+    {
+      "label": "blocked: proof built on different public facts",
+      "status": "reverted",
+      "hash": "0xb4c7b0aa8926e81989b3f5bc9bc7006be447855005a4569292058377e1cca460"
+    },
+    {
+      "label": "released: report, review and proof all line up",
       "status": "success",
-      "hash": "0x8f393bcb6b3e91e901d08fc93832b5f7bc8d43d760ddcf7475088ee61160005a"
+      "hash": "0xde627131f5f0ea97ad2c8e87d9f466172af149bf96e2900837b596e9d49c31c0"
     }
   ],
-  "creatorBalance": "1000000000",
-  "workflowReport": {
-    "tx": "0x5b8ff435aafb66b1bb72e1e4cf1983ae937b1d43201df3b67828c329e4a45d15",
-    "digest": "0x01d15511b389813d38b806ea988a94a7a9ff78fb94c9f590249a8684e552d428",
-    "videos": 1,
-    "contradictions": 0,
-    "note": "CRE simulate --broadcast through the mock forwarder, reading one public test video."
-  }
+  "creatorBalance": "1000000000"
 }

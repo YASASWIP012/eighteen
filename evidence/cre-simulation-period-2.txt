@@ -1,23 +1,19 @@
-Initializing...
-Loading settings...
-Checking RPC connectivity...
-Compiling workflow...
 ✓ Workflow compiled
 ✓ Simulation limits enabled
   HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
-  Binary hash: 3fb6a9cf948e9a317284b28f3c20dda3dd4da88d4fb3e917fc44e0d473eaef48
-  Config hash: b4049733110ad64fe7e47ce4d9f5fa27682ac323209a37b6bad05fd1125cad5b
-2026-11-01T02:45:01Z [SIMULATION] Simulator Initialized
+  Binary hash: e978ec32f62daea403192bf8a05893cbb6ffe1959be776bd124631d386e9bd82
+  Config hash: d8540d31c91112a7f01a18fd19bf2bbe1b029e53809994b158a14dd5effcf893
+2026-11-01T03:06:07Z [SIMULATION] Simulator Initialized
 
-2026-11-01T02:45:01Z [SIMULATION] Running trigger trigger=cron-trigger@1.0.0
-2026-11-01T02:45:12Z [USER LOG] Write: tx=2 receiver=0 hash=0x5b8ff435aafb66b1bb72e1e4cf1983ae937b1d43201df3b67828c329e4a45d15
-2026-11-01T02:45:12Z [USER LOG] Sealed 1 videos, 0 contradictions
+2026-11-01T03:06:07Z [SIMULATION] Running trigger trigger=cron-trigger@1.0.0
+2026-11-01T03:06:13Z [USER LOG] Write: tx=2 receiver=0 hash=0xff33b7724cf8e243268b56f76deec0d98c2ac0e0f69bfe5c662e58e2e364e5f8
+2026-11-01T03:06:13Z [USER LOG] Sealed 1 videos, 0 contradictions
 
 ✓ Workflow Simulation Result:
 "AdFVEbOJgT04uAbqmIqUp6n/ePuUyfWQJJqGhOVS1Cg="
 
-2026-11-01T02:45:12Z [SIMULATION] Execution finished signal received
-2026-11-01T02:45:12Z [SIMULATION] Skipping WorkflowEngineV2
+2026-11-01T03:06:13Z [SIMULATION] Execution finished signal received
+2026-11-01T03:06:13Z [SIMULATION] Skipping WorkflowEngineV2
 
 ╭──────────────────────────────────────────────────────╮
 │ Simulation complete! Ready to deploy your workflow?  │

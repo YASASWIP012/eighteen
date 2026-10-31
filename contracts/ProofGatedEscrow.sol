@@ -11,14 +11,28 @@ interface ISetAsideVerifier {
         uint256[2] calldata a,
         uint256[2][2] calldata b,
         uint256[2] calldata c,
-        uint256[6] calldata publicSignals
+        uint256[8] calldata publicSignals
     ) external view returns (bool);
+}
+
+interface IFactsRegistry {
+    struct Attestation {
+        bytes32 channelRef;
+        uint256 factsDigest;
+        uint256 earningsCommitment;
+        uint32 videos;
+        uint32 contradictions;
+        uint64 sealedAt;
+    }
+
+    function attestation(uint256 dealId, uint256 periodId) external view returns (Attestation memory);
 }
 
 /// @notice Holds a sponsorship under a contractual compliance clause. The
 /// creator's share releases only after the period's sampled review has closed
 /// and a proof shows a deposit, signed by the deal's fiduciary, covers what the
-/// statute requires.
+/// statute requires. The earnings and public facts in that proof must match the
+/// oracle report for the period, and a reported contradiction stops the payout.
 /// The trust itself stays with a bank or fiduciary, never in this contract.
 contract ProofGatedEscrow {
     struct Deal {
@@ -35,6 +49,7 @@ contract ProofGatedEscrow {
 
     IERC20Minimal public immutable token;
     ISetAsideVerifier public immutable verifier;
+    IFactsRegistry public immutable registry;
 
     mapping(uint256 => Deal) public deals;
     /// @dev Keyed by deal and period; holds the commitment the reviewer signed off.
@@ -55,10 +70,13 @@ contract ProofGatedEscrow {
     error TransferFailed();
     error BadJurisdiction();
     error EmptyCommitment();
+    error NotAttested();
+    error Contradiction();
 
-    constructor(IERC20Minimal token_, ISetAsideVerifier verifier_) {
+    constructor(IERC20Minimal token_, ISetAsideVerifier verifier_, IFactsRegistry registry_) {
         token = token_;
         verifier = verifier_;
+        registry = registry_;
     }
 
     function open(
@@ -102,13 +120,19 @@ contract ProofGatedEscrow {
         uint256 commitment = reviewed[dealId][periodId];
         if (commitment == 0) revert ReviewOpen();
 
-        uint256[6] memory signals = [
+        IFactsRegistry.Attestation memory report = registry.attestation(dealId, periodId);
+        if (report.earningsCommitment == 0) revert NotAttested();
+        if (report.contradictions != 0) revert Contradiction();
+
+        uint256[8] memory signals = [
             commitment,
             dealId,
             periodId,
             uint256(deal.jurisdiction),
             deal.fiduciaryAx,
-            deal.fiduciaryAy
+            deal.fiduciaryAy,
+            report.earningsCommitment,
+            report.factsDigest
         ];
         if (!verifier.verifyProof(a, b, c, signals)) revert InvalidProof();
 
