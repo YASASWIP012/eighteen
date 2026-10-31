@@ -1,0 +1,28 @@
+Initializing...
+Loading settings...
+! Using default private key for chain write simulation. To use your own key, set CRE_ETH_PRIVATE_KEY in your .env file or system environment.
+Checking RPC connectivity...
+Compiling workflow...
+✓ Workflow compiled
+✓ Simulation limits enabled
+  HTTP: req=120kb resp=250kb timeout=10s | ConfHTTP: req=125kb resp=500kb timeout=1m30s | Consensus obs=25kb | ChainWrite evm_report=50kb evm_gas=10000000 solana_report=265b solana_cu=300000 | WASM binary=100mb compressed=20mb
+  Binary hash: afb4798500ca352a08a18ca6550e118f7515951d54d1d2a052a753b0d2748476
+  Config hash: ef08a6118bec836191e2f0eca0201e01035d6cd65d1e3d30b36ce535f052a9c8
+2026-11-01T01:43:10Z [SIMULATION] Simulator Initialized
+
+2026-11-01T01:43:10Z [SIMULATION] Running trigger trigger=cron-trigger@1.0.0
+2026-11-01T01:43:14Z [USER LOG] Sealed 1 videos, 0 contradictions
+
+✓ Workflow Simulation Result:
+"AdFVEbOJgT04uAbqmIqUp6n/ePuUyfWQJJqGhOVS1Cg="
+
+2026-11-01T01:43:14Z [SIMULATION] Execution finished signal received
+2026-11-01T01:43:14Z [SIMULATION] Skipping WorkflowEngineV2
+
+╭──────────────────────────────────────────────────────╮
+│ Simulation complete! Ready to deploy your workflow?  │
+│                                                      │
+│ Run cre account access to request deployment access. │
+╰──────────────────────────────────────────────────────╯
+cre(23269) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.
+cre(23270) MallocStackLogging: can't turn off malloc stack logging because it was not enabled.

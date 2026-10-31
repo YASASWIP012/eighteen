@@ -37,7 +37,7 @@ Best workflow with CRE
 
 ## Status
 
-Built and tested: rule engine for three states, circuit with fiduciary signature, proof-gated escrow on a local chain, review sampling, Birthday Packet, browser demo. The workflow compiles to WebAssembly and runs under the SDK test runtime. [Add the CRE simulation result once run.] Figures are sample data, and a sandbox key plays the fiduciary. [Add Sepolia addresses if deployed.]
+Built and tested: rule engine for three states, circuit with fiduciary signature, proof-gated escrow on a local chain, review sampling, Birthday Packet, browser demo. The workflow runs in the CRE CLI simulator against the real YouTube Data API. [Add the broadcast transaction once run.] Figures are sample data, and a sandbox key plays the fiduciary. [Add Sepolia addresses if deployed.]
 
 ## Review
 

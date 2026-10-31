@@ -22,7 +22,7 @@ Open http://localhost:4173. With the sample figures, $20,000 at 50% content owes
 | Minnesota, California and Illinois rule engine | Built and tested |
 | Set-aside circuit with fiduciary signature (Circom, Groth16, 10,667 constraints) | Built and tested |
 | Proof-gated escrow with reviewer close and refund | Built, tested with real proofs on a local chain |
-| Public-facts workflow (Chainlink CRE, TypeScript SDK) | Compiles to WebAssembly with the SDK compiler; runs under the SDK test runtime with mocked network and chain; not yet simulated with the CRE CLI |
+| Public-facts workflow (Chainlink CRE, TypeScript SDK) | Runs in the CRE CLI simulator against the real YouTube Data API ([log](evidence/cre-simulation.txt)), so far on one public test video and without an on-chain write |
 | Facts registry | Built and tested |
 | Random review sampling and error-rate estimate | Built and tested |
 | Birthday Packet export | Built and tested |
