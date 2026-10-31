@@ -1,7 +1,12 @@
 import assert from "node:assert/strict";
 import { before, test } from "node:test";
 import hre from "hardhat";
-import { commit, prove, type PrivatePeriod } from "../src/prove.ts";
+import { commit, fiduciaryPublicKey, prove as proveWith, signDeposit, witnessHolds, type PrivatePeriod } from "../src/prove.ts";
+
+const FIDUCIARY_KEY = "sandbox-fiduciary";
+const fiduciary = fiduciaryPublicKey(FIDUCIARY_KEY);
+const prove = (p: PrivatePeriod, deal: bigint, periodId: bigint) =>
+  proveWith(p, deal, periodId, fiduciary, signDeposit(FIDUCIARY_KEY, p.depositedCents, deal, periodId));
 
 const AMOUNT = 10_000_000_000n;
 const period: PrivatePeriod = {
@@ -10,6 +15,7 @@ const period: PrivatePeriod = {
   contentBps: 5000,
   minorsInSegment: 1,
   ageYears: 15,
+  viewTestMet: true,
   depositedCents: 500_000n,
   salt: 987654321n,
 };
@@ -36,6 +42,8 @@ async function openDeal(jurisdiction = 0, refundAfter = 0n) {
     AMOUNT,
     refundAfter || 4_000_000_000n,
     jurisdiction,
+    fiduciary[0],
+    fiduciary[1],
   ]);
   return id;
 }
@@ -62,6 +70,21 @@ test("no witness exists for a one cent shortfall", async () => {
 test("California owes more on the same facts", async () => {
   await assert.rejects(prove({ ...period, jurisdiction: "CA" }, 99n, 1n));
   await prove({ ...period, jurisdiction: "CA", depositedCents: 650_000n }, 99n, 1n);
+});
+
+test("a parent can't claim a larger deposit than the fiduciary signed", async () => {
+  const signed = signDeposit(FIDUCIARY_KEY, 100_000n, 99n, 1n);
+  assert.equal(await witnessHolds(period, 99n, 1n, fiduciary, signed), false);
+});
+
+test("a fiduciary statement from another period can't be reused", async () => {
+  const signed = signDeposit(FIDUCIARY_KEY, period.depositedCents, 99n, 1n);
+  assert.equal(await witnessHolds(period, 99n, 2n, fiduciary, signed), false);
+});
+
+test("a statement signed by a different key is rejected", async () => {
+  const signed = signDeposit("someone-else", period.depositedCents, 99n, 1n);
+  assert.equal(await witnessHolds(period, 99n, 1n, fiduciary, signed), false);
 });
 
 test("reverts while the review is open", async () => {
@@ -95,7 +118,7 @@ test("a proof under the wrong statute is rejected", async () => {
 test("a commitment the reviewer did not sign is rejected", async () => {
   const id = await openDeal();
   const proof = await prove(period, id, 1n);
-  const other = await commit({ ...period, salt: 1n });
+  const other = commit({ ...period, salt: 1n });
   await closeReview(id, 1n, other);
   await assert.rejects(escrow.write.release([id, 1n, proof.a, proof.b, proof.c]), /InvalidProof/);
 });

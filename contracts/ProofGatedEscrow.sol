@@ -11,13 +11,14 @@ interface ISetAsideVerifier {
         uint256[2] calldata a,
         uint256[2][2] calldata b,
         uint256[2] calldata c,
-        uint256[4] calldata publicSignals
+        uint256[6] calldata publicSignals
     ) external view returns (bool);
 }
 
 /// @notice Holds a sponsorship under a contractual compliance clause. The
 /// creator's share releases only after the period's sampled review has closed
-/// and a proof shows the child's deposit covers what the statute requires.
+/// and a proof shows a deposit, signed by the deal's fiduciary, covers what the
+/// statute requires.
 /// The trust itself stays with a bank or fiduciary, never in this contract.
 contract ProofGatedEscrow {
     struct Deal {
@@ -28,6 +29,8 @@ contract ProofGatedEscrow {
         uint64 refundAfter;
         uint8 jurisdiction;
         bool settled;
+        uint256 fiduciaryAx;
+        uint256 fiduciaryAy;
     }
 
     IERC20Minimal public immutable token;
@@ -64,11 +67,14 @@ contract ProofGatedEscrow {
         address reviewer,
         uint96 amount,
         uint64 refundAfter,
-        uint8 jurisdiction
+        uint8 jurisdiction,
+        uint256 fiduciaryAx,
+        uint256 fiduciaryAy
     ) external {
         if (deals[dealId].brand != address(0)) revert DealExists();
-        if (jurisdiction > 1) revert BadJurisdiction();
-        deals[dealId] = Deal(msg.sender, creator, reviewer, amount, refundAfter, jurisdiction, false);
+        if (jurisdiction > 2) revert BadJurisdiction();
+        deals[dealId] =
+            Deal(msg.sender, creator, reviewer, amount, refundAfter, jurisdiction, false, fiduciaryAx, fiduciaryAy);
         if (!token.transferFrom(msg.sender, address(this), amount)) revert TransferFailed();
         emit DealOpened(dealId, amount);
     }
@@ -96,7 +102,14 @@ contract ProofGatedEscrow {
         uint256 commitment = reviewed[dealId][periodId];
         if (commitment == 0) revert ReviewOpen();
 
-        uint256[4] memory signals = [commitment, dealId, periodId, uint256(deal.jurisdiction)];
+        uint256[6] memory signals = [
+            commitment,
+            dealId,
+            periodId,
+            uint256(deal.jurisdiction),
+            deal.fiduciaryAx,
+            deal.fiduciaryAy
+        ];
         if (!verifier.verifyProof(a, b, c, signals)) revert InvalidProof();
 
         deal.settled = true;

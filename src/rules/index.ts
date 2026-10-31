@@ -1,7 +1,7 @@
 // Statute rule packs. All money is integer cents and all shares are basis
 // points, so the circuit and this engine agree exactly.
 
-export type Jurisdiction = "MN" | "CA";
+export type Jurisdiction = "MN" | "CA" | "IL";
 
 export interface PeriodFacts {
   jurisdiction: Jurisdiction;
@@ -11,6 +11,8 @@ export interface PeriodFacts {
   /** Minors who share the content segment, including this one. */
   minorsInSegment: number;
   ageYears: number;
+  /** Platform compensation threshold met, or at least $0.10 per view. */
+  viewTestMet: boolean;
 }
 
 export interface Assessment {
@@ -24,10 +26,13 @@ export interface Assessment {
 
 const COVERAGE_BPS = 3000;
 const BPS = 10_000n;
+const CA_MONTHLY_FLOOR_CENTS = 125_000n;
 
 export function assess(facts: PeriodFacts): Assessment {
   validate(facts);
-  return facts.jurisdiction === "MN" ? assessMN(facts) : assessCA(facts);
+  if (facts.jurisdiction === "MN") return assessMN(facts);
+  if (facts.jurisdiction === "IL") return assessIL(facts);
+  return assessCA(facts);
 }
 
 function validate(f: PeriodFacts): void {
@@ -38,6 +43,24 @@ function validate(f: PeriodFacts): void {
   if (!Number.isInteger(f.minorsInSegment) || f.minorsInSegment < 1) {
     throw new RangeError("minorsInSegment must be at least 1");
   }
+}
+
+function result(
+  f: PeriodFacts,
+  covered: boolean,
+  setAsideBps: number,
+  citation: string,
+  ruleVersion: string,
+): Assessment {
+  if (!covered) return { covered, setAsideBps: 0, owedCents: 0n, flags: [], citation, ruleVersion };
+  return {
+    covered,
+    setAsideBps,
+    owedCents: (f.grossCents * BigInt(setAsideBps)) / BPS,
+    flags: [],
+    citation,
+    ruleVersion,
+  };
 }
 
 function assessMN(f: PeriodFacts): Assessment {
@@ -57,38 +80,29 @@ function assessMN(f: PeriodFacts): Assessment {
     };
   }
 
-  if (f.contentBps < COVERAGE_BPS) {
-    return { covered: false, setAsideBps: 0, owedCents: 0n, flags: [], citation, ruleVersion };
-  }
+  const covered = f.contentBps >= COVERAGE_BPS && f.viewTestMet;
+  return result(f, covered, Math.floor(f.contentBps / 2 / f.minorsInSegment), citation, ruleVersion);
+}
 
-  const setAsideBps = Math.floor(f.contentBps / 2 / f.minorsInSegment);
-  return {
-    covered: true,
-    setAsideBps,
-    owedCents: (f.grossCents * BigInt(setAsideBps)) / BPS,
-    flags: [],
-    citation,
-    ruleVersion,
-  };
+function assessIL(f: PeriodFacts): Assessment {
+  const covered = f.ageYears < 16 && f.contentBps >= COVERAGE_BPS && f.viewTestMet;
+  return result(
+    f,
+    covered,
+    Math.floor(f.contentBps / 2 / f.minorsInSegment),
+    "820 ILCS 206/95, 206/100",
+    "IL-206-2025",
+  );
 }
 
 function assessCA(f: PeriodFacts): Assessment {
-  const citation = "Cal. Fam. Code 6650-6655 (secondary source, code text not yet read)";
-  const ruleVersion = "CA-SB764-2025";
-  const MONTHLY_FLOOR_CENTS = 125_000n;
-
-  if (f.contentBps < COVERAGE_BPS || f.grossCents < MONTHLY_FLOOR_CENTS) {
-    return { covered: false, setAsideBps: 0, owedCents: 0n, flags: [], citation, ruleVersion };
-  }
-
-  const setAsideBps = Math.floor((f.contentBps * 65) / 100 / f.minorsInSegment);
-  return {
-    covered: true,
-    setAsideBps,
-    owedCents: (f.grossCents * BigInt(setAsideBps)) / BPS,
-    // The equal split is carried over from Minnesota; the California source read so far is silent.
-    flags: f.minorsInSegment > 1 ? ["CA_SPLIT_UNVERIFIED"] : [],
-    citation,
-    ruleVersion,
-  };
+  const covered =
+    f.contentBps >= COVERAGE_BPS && f.grossCents >= CA_MONTHLY_FLOOR_CENTS && f.viewTestMet;
+  return result(
+    f,
+    covered,
+    Math.floor((f.contentBps * 65) / 100 / f.minorsInSegment),
+    "Cal. Fam. Code 6651, 6652(f), 6653(a)",
+    "CA-6650-2025",
+  );
 }

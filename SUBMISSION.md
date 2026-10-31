@@ -14,9 +14,9 @@ Child creators are owed money by law. Eighteen lets a family prove it was set as
 
 Minnesota, Illinois and California require money to be set aside for minors who earn through online content. A child can have grounds to sue over it, but the record usually sits with the parent, the person they would have to sue.
 
-Eighteen runs each statute as a zero-knowledge circuit. A deposit one cent short of what the law requires can't produce a proof, and a sponsor's USDC doesn't release to the creator without a valid proof and a closed human review. A Chainlink CRE workflow seals what the channel publicly said at the time, so a title naming a child on a video declared as zero participation shows up as a contradiction.
+Eighteen runs each statute as a zero-knowledge circuit, and the deposit has to carry the fiduciary's signature. A deposit one cent short of what the law requires can't produce a proof, and neither can a figure the fiduciary didn't sign. A sponsor's USDC doesn't release to the creator without a valid proof and a closed human review. A Chainlink CRE workflow seals what the channel publicly said at the time, so a title naming a child on a video declared as zero participation shows up as a contradiction.
 
-The same facts give different answers by state: $20,000 at 50% content owes $5,000 in Minnesota and $6,500 in California. The money stays with a bank or fiduciary, as Minnesota requires.
+The same facts give different answers by state: $20,000 at 50% content owes $5,000 in Minnesota and $6,500 in California. The money stays with a bank or fiduciary, as the statutes require.
 
 Eighteen does not prove that a parent told the truth. It proves who said what and when, and where that conflicts with public facts.
 
@@ -37,7 +37,7 @@ Best workflow with CRE
 
 ## Status
 
-Built and tested: rule engine, circuit, proof-gated escrow on a local chain, browser demo. Workflow logic is tested, and the workflow type-checks against the CRE SDK. [Add the CRE simulation result once run.] Figures are sample data. [Add Sepolia addresses if deployed.]
+Built and tested: rule engine for three states, circuit with fiduciary signature, proof-gated escrow on a local chain, review sampling, Birthday Packet, browser demo. The workflow compiles to WebAssembly and runs under the SDK test runtime. [Add the CRE simulation result once run.] Figures are sample data, and a sandbox key plays the fiduciary. [Add Sepolia addresses if deployed.]
 
 ## Review
 

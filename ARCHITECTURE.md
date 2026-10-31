@@ -4,7 +4,7 @@
 flowchart LR
   YT[YouTube Data API] -->|every node fetches| WF[CRE workflow]
   WF -->|signed report| FR[FactsRegistry]
-  FID[Fiduciary or prover] -->|private inputs| ZK[Set-aside circuit]
+  FID[Fiduciary] -->|signed deposit| ZK[Set-aside circuit]
   ZK -->|proof| ESC[ProofGatedEscrow]
   REV[Reviewer] -->|closes review, signs commitment| ESC
   BR[Brand] -->|USDC| ESC
@@ -16,18 +16,24 @@ flowchart LR
 
 Exact integer arithmetic, in cents and basis points. Each result carries its citation and rule version.
 
-| Rule | Minnesota | California |
-|---|---|---|
-| Coverage | At least 30% of paid content | At least 30%, and at least $1,250 for the period |
-| Set-aside | Half the content percentage | 65% of the content percentage |
-| Under 14 | Barred, 100% owed, flagged | No special rule |
-| Siblings | Equal split | Same split, flagged as unconfirmed |
+| Rule | Minnesota | California | Illinois |
+|---|---|---|---|
+| Coverage | 30% of paid content and view test | 30%, view test, and at least $1,250 in the month | 30% and view test, minors under 16 |
+| Set-aside | Half the content percentage | 65% of the content percentage | Half the content percentage |
+| Under 14 | Barred, 100% owed, flagged | No special rule | No special rule |
+| Siblings in a segment | Equal split | Equal split | Equal split |
 
 ## Circuit: `circuits/setaside.circom`
 
-The circuit proves that a deposit covers the amount owed. Private inputs are earnings, content share, number of minors, age, deposit and a salt. Public inputs are the commitment, deal, period and jurisdiction, so a proof can't be replayed on another deal, period or statute. Floor division uses witness quotients. Every value used in a product is range checked, because an unbounded quotient could wrap the field and understate what is owed.
+The circuit proves that a deposit covers the amount owed, and that the deal's fiduciary signed that deposit for this deal and period. Private inputs are earnings, content share, number of minors, age, the view test, the deposit, a salt and the signature. Public inputs are the commitment, deal, period, jurisdiction and fiduciary public key, so a proof can't be replayed on another deal, period or statute, and a parent can't claim a figure the fiduciary didn't sign. Floor division uses witness quotients. Every value used in a product is range checked, because an unbounded quotient could wrap the field and understate what is owed.
 
-A shortfall has no valid witness, so it can't produce a proof at all. `test/differential.test.ts` confirms the circuit and rule engine agree on the exact cent.
+A shortfall has no valid witness, so it can't produce a proof at all. `test/differential.test.ts` confirms the circuit and rule engine agree on the exact cent across sampled boundary cases.
+
+The signature covers the deposit only. Earnings and content share are still inputs, which is why release also needs a human review.
+
+## Review: `src/review.ts`
+
+Videos for review are picked from public randomness, published after declarations are sealed, with half the sample taken from around the 30% line. Results give an under-declaration rate with a Wilson 95% interval, and flag any video that a review moves across the line.
 
 ## Escrow: `contracts/ProofGatedEscrow.sol`
 
@@ -37,7 +43,7 @@ Wallets, amounts and timing are public on this rail, so it isn't a private payme
 
 ## Workflow: `workflow/`
 
-On a schedule, every node requests the same videos from the YouTube Data API. Only stable fields are requested, because identical consensus fails on volatile ones such as view counts. The nodes agree on a digest of the facts and a count of contradictions, then write a report to `FactsRegistry`.
+On a schedule, every node requests the same videos from the YouTube Data API. Only stable fields are requested, because identical consensus fails on volatile ones such as view counts. The nodes agree on a digest of the facts and a count of contradictions, then write a report to `FactsRegistry`. Handler logic is in `handler.ts`, and `handler.test.ts` runs it under the SDK test runtime.
 
 A contradiction is a video declared as zero participation whose public title or description names the child. Statutes count name and oral narrative as well as likeness, though a title match alone is arguable as evidence. Stored digests also reveal edits made after capture.
 

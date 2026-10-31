@@ -30,13 +30,15 @@
       <p>Can a family prove it set aside what a child is owed, without showing anyone the child's income?</p>
 
       <label>State
-        <select id="state"><option value="MN">Minnesota</option><option value="CA">California</option></select>
+        <select id="state"><option value="MN">Minnesota</option><option value="CA">California</option><option value="IL">Illinois</option></select>
       </label>
       <label>Gross earnings for the period ($)<input id="gross" type="number" min="0" step="0.01" value="20000" /></label>
       <label>Share of paid content with this child (%)<input id="content" type="number" min="0" max="100" step="0.01" value="50" /></label>
       <label>Children sharing the segment<input id="minors" type="number" min="1" max="20" value="1" /></label>
       <label>Child's age<input id="age" type="number" min="0" max="17" value="15" /></label>
-      <label>Deposited in the child's trust ($)<input id="deposit" type="number" min="0" step="0.01" value="5000" /></label>
+      <label>Views or per-view pay test met<input id="views" type="checkbox" checked /></label>
+      <label>Deposit the parent claims ($)<input id="deposit" type="number" min="0" step="0.01" value="5000" /></label>
+      <label>Deposit the fiduciary signed ($)<input id="signed" type="number" min="0" step="0.01" value="5000" /></label>
 
       <div class="result">
         <p>Owed under this statute</p>
@@ -48,9 +50,10 @@
       </div>
 
       <button id="prove">Generate proof</button>
+      <button id="packet">Download sample Birthday Packet</button>
       <p id="outcome" aria-live="polite"></p>
 
-      <small>All figures here are sample values typed by you. Nothing leaves this page. This is a prototype and not legal advice. California rules come from a law-firm summary until the code text has been read.</small>
+      <small>All figures here are sample values typed by you, and a sandbox key plays the fiduciary. Nothing leaves this page. This is a prototype and not legal advice.</small>
     </main>
     <script type="module" src="app.js"></script>
   </body>

@@ -1,4 +1,5 @@
 {
   "compilerOptions": { "target": "ES2022", "module": "ESNext", "moduleResolution": "bundler", "strict": true, "noEmit": true, "skipLibCheck": true, "allowImportingTsExtensions": true, "types": ["node"] },
-  "include": ["workflow/**/*.ts", "src/**/*.ts"]
+  "include": ["workflow/**/*.ts", "src/**/*.ts"],
+  "exclude": ["workflow/*.test.ts"]
 }
