@@ -18430,7 +18430,7 @@ function result(f, covered, setAsideBps, citation, ruleVersion) {
   };
 }
 function assessMN(f) {
-  const citation = "Minn. Stat. 181A.13 subds. 1, 3";
+  const citation = "Minn. Stat. 181A.13 subds. 1(a), 1(b), 3(a)";
   const ruleVersion = "MN-181A.13-2026";
   if (f.ageYears < 14 && f.contentBps > 0) {
     return {
@@ -18451,7 +18451,7 @@ function assessIL(f) {
     f,
     covered,
     Math.floor(f.contentBps / 2 / f.minorsInSegment),
-    "820 ILCS 206/95, 206/100",
+    "820 ILCS 206/95, 206/100(a)",
     "IL-206-2025"
   );
 }
@@ -18461,7 +18461,7 @@ function assessCA(f) {
     f,
     covered,
     Math.floor(f.contentBps * 65 / 100 / f.minorsInSegment),
-    "Cal. Fam. Code 6651, 6652(f), 6653(a)",
+    "Cal. Fam. Code 6651, 6652(f), 6653(a)(2)",
     "CA-6650-2025"
   );
 }
@@ -18822,7 +18822,7 @@ function renderPacket(childAlias, periods) {
     "",
     "- That the parent's declared content share is accurate. It shows who declared what, and when.",
     "- That all income was reported. Income outside the connected platform is self-reported.",
-    "- That any shortfall was knowing or reckless, which is what a claim under these statutes turns on.",
+    "- The vlogger's state of mind. Claims turn on it: knowing or reckless in Minnesota and Illinois, knew or should have known in California.",
     "",
     "This packet is not legal advice. Take it to a lawyer.",
     ""

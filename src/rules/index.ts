@@ -11,7 +11,7 @@ export interface PeriodFacts {
   /** Minors who share the content segment, including this one. */
   minorsInSegment: number;
   ageYears: number;
-  /** Platform compensation threshold met, or at least $0.10 per view. */
+  /** Platform compensation threshold met, or the per-view rate: $0.01 in MN, $0.10 in CA and IL. */
   viewTestMet: boolean;
 }
 
@@ -64,7 +64,7 @@ function result(
 }
 
 function assessMN(f: PeriodFacts): Assessment {
-  const citation = "Minn. Stat. 181A.13 subds. 1, 3";
+  const citation = "Minn. Stat. 181A.13 subds. 1(a), 1(b), 3(a)";
   const ruleVersion = "MN-181A.13-2026";
 
   // A featured minor under 14 is owed all compensation for the content, and
@@ -90,7 +90,7 @@ function assessIL(f: PeriodFacts): Assessment {
     f,
     covered,
     Math.floor(f.contentBps / 2 / f.minorsInSegment),
-    "820 ILCS 206/95, 206/100",
+    "820 ILCS 206/95, 206/100(a)",
     "IL-206-2025",
   );
 }
@@ -102,7 +102,7 @@ function assessCA(f: PeriodFacts): Assessment {
     f,
     covered,
     Math.floor((f.contentBps * 65) / 100 / f.minorsInSegment),
-    "Cal. Fam. Code 6651, 6652(f), 6653(a)",
+    "Cal. Fam. Code 6651, 6652(f), 6653(a)(2)",
     "CA-6650-2025",
   );
 }

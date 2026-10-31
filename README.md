@@ -60,7 +60,7 @@ These parts of [the wider design](DESIGN.md) are not in this prototype:
 
 A proof shows the numbers satisfy the statute. It doesn't show that the numbers are true. Declared content share comes from the parent, which is why release also needs a human reviewer and why the workflow checks declarations against public channel data. That check runs one way: it can show under-declaration and can never prove accuracy.
 
-Rule packs follow Cal. Fam. Code 6651-6653, Minn. Stat. 181A.13 and 820 ILCS 206/95 and 206/100. Illinois was read through a commercial code site, so check it against the General Assembly's text before relying on it. Utah is unsupported until its enrolled bill has been read. California's separate Coogan rule (AB 1880) is not modeled.
+Rule packs follow Cal. Fam. Code 6651-6653, Minn. Stat. 181A.13 and 820 ILCS 206/95 and 206/100. [LEGAL.md](LEGAL.md) lists what is not modeled.
 
 The proving keys come from a development setup with a single contributor, which is not safe for production.
 
@@ -74,4 +74,4 @@ npm test
 
 Covers the statute examples, the 30% boundary, a differential test that the circuit and the rule engine agree to the cent, forged and reused fiduciary statements, replay across deals and periods, the wrong statute, double payment, refunds, review sampling, and the workflow handler. The last test needs Bun, which installs with the project.
 
-More detail is in [ARCHITECTURE.md](ARCHITECTURE.md).
+More detail is in [ARCHITECTURE.md](ARCHITECTURE.md). [LEGAL.md](LEGAL.md) maps each statutory provision to its code, test and on-chain evidence, and records the outside review and its disclosure.

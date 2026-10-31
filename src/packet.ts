@@ -65,7 +65,7 @@ export function renderPacket(childAlias: string, periods: PacketPeriod[]): strin
     "",
     "- That the parent's declared content share is accurate. It shows who declared what, and when.",
     "- That all income was reported. Income outside the connected platform is self-reported.",
-    "- That any shortfall was knowing or reckless, which is what a claim under these statutes turns on.",
+    "- The vlogger's state of mind. Claims turn on it: knowing or reckless in Minnesota and Illinois, knew or should have known in California.",
     "",
     "This packet is not legal advice. Take it to a lawyer.",
     "",
