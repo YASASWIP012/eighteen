@@ -13,7 +13,7 @@ npm install --legacy-peer-deps
 npm run demo
 ```
 
-Open http://localhost:4173. With the sample figures, $20,000 at 50% content owes $5,000 in Minnesota and $6,500 in California. Lower the deposit by one cent and no proof can be generated. Claim more than the fiduciary signed and the same thing happens. Proofs run in your browser and can take up to a minute, and nothing leaves the page.
+Open http://localhost:4173, or use the [hosted demo](https://yasaswip012.github.io/eighteen/). With the sample figures, $20,000 at 50% content owes $5,000 in Minnesota and $6,500 in California. Lower the deposit by one cent and no proof can be generated. Claim more than the fiduciary signed and the same thing happens. Proofs run in your browser and can take up to a minute, and nothing leaves the page.
 
 ## What is built
 
@@ -32,6 +32,7 @@ Open http://localhost:4173. With the sample figures, $20,000 at 50% content owes
 
 | What | Link |
 |---|---|
+| Source verification | All four contracts are an exact match on [Sourcify](https://repo.sourcify.dev/11155111/0x7444d7c2e2ddd4a075a7cb4c5d152b62016d02b1) |
 | ProofGatedEscrow | [0x7444...02b1](https://sepolia.etherscan.io/address/0x7444d7c2e2ddd4a075a7cb4c5d152b62016d02b1) |
 | Groth16Verifier | [0xe709...9adc](https://sepolia.etherscan.io/address/0xe709731d9cbc23bc16f6ffa4b3f08bda92b09adc) |
 | FactsRegistry | [0xe19c...891a](https://sepolia.etherscan.io/address/0xe19c4f3d8d399f03f1caf9d0ead70abc6a76891a) |
