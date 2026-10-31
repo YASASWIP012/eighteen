@@ -21,12 +21,26 @@ Open http://localhost:4173. With the sample figures, $20,000 at 50% content owes
 |---|---|
 | Minnesota, California and Illinois rule engine | Built and tested |
 | Set-aside circuit with fiduciary signature (Circom, Groth16, 10,667 constraints) | Built and tested |
-| Proof-gated escrow with reviewer close and refund | Built, tested with real proofs on a local chain |
-| Public-facts workflow (Chainlink CRE, TypeScript SDK) | Runs in the CRE CLI simulator against the real YouTube Data API ([log](evidence/cre-simulation.txt)), so far on one public test video and without an on-chain write |
-| Facts registry | Built and tested |
+| Proof-gated escrow with reviewer close and refund | Deployed on Sepolia, with two payouts blocked and one released using real proofs ([evidence](evidence/sepolia.json)) |
+| Public-facts workflow (Chainlink CRE, TypeScript SDK) | Runs in the CRE CLI simulator against the real YouTube Data API, with a report written to Sepolia through the mock forwarder ([log](evidence/cre-simulation.txt)). So far on one public test video, and not deployed to a live Chainlink network |
+| Facts registry | Deployed on Sepolia and tested |
 | Random review sampling and error-rate estimate | Built and tested |
 | Birthday Packet export | Built and tested |
 | Browser demo | Built and tested by hand |
+
+## On Sepolia
+
+| What | Link |
+|---|---|
+| ProofGatedEscrow | [0xb841...1461](https://sepolia.etherscan.io/address/0xb841c226757482b439b400ed352d49758ba31461) |
+| Groth16Verifier | [0xf16b...c7ab](https://sepolia.etherscan.io/address/0xf16b82847183c39c35d99e523e84ae74441fc7ab) |
+| FactsRegistry | [0x3f60...6b6b](https://sepolia.etherscan.io/address/0x3f60b175ec86cccd0a84b185978a734a841f6b6b) |
+| Payout blocked: review still open | [transaction](https://sepolia.etherscan.io/tx/0xdec22f75e192cd813ca0650b57673730cb241ceb1d28cb415b25fe8180cccbed) |
+| Payout blocked: proof for another period | [transaction](https://sepolia.etherscan.io/tx/0xccd73804318479291e7df35276e0be09d2c1c18da5d5661df54e4bd0629cee7f) |
+| Payout released: valid proof | [transaction](https://sepolia.etherscan.io/tx/0x8f393bcb6b3e91e901d08fc93832b5f7bc8d43d760ddcf7475088ee61160005a) |
+| Public facts sealed by the workflow | [transaction](https://sepolia.etherscan.io/tx/0x5b8ff435aafb66b1bb72e1e4cf1983ae937b1d43201df3b67828c329e4a45d15) |
+
+Figures are samples, a sandbox key plays the fiduciary, and one wallet acts as brand and reviewer.
 
 ## What is not built
 

@@ -1,0 +1,35 @@
+{
+  "network": "Sepolia",
+  "note": "Sample figures and a sandbox fiduciary key. The deployer also acts as brand and reviewer.",
+  "contracts": {
+    "TestUSDC": "0x9bc46ab39015ef13ef195849b8f54798a0e75cb8",
+    "Groth16Verifier": "0xf16b82847183c39c35d99e523e84ae74441fc7ab",
+    "ProofGatedEscrow": "0xb841c226757482b439b400ed352d49758ba31461",
+    "FactsRegistry": "0x3f60b175ec86cccd0a84b185978a734a841f6b6b"
+  },
+  "steps": [
+    {
+      "label": "release while the review is open",
+      "status": "reverted",
+      "hash": "0xdec22f75e192cd813ca0650b57673730cb241ceb1d28cb415b25fe8180cccbed"
+    },
+    {
+      "label": "release with a proof for another period",
+      "status": "reverted",
+      "hash": "0xccd73804318479291e7df35276e0be09d2c1c18da5d5661df54e4bd0629cee7f"
+    },
+    {
+      "label": "release with a valid proof",
+      "status": "success",
+      "hash": "0x8f393bcb6b3e91e901d08fc93832b5f7bc8d43d760ddcf7475088ee61160005a"
+    }
+  ],
+  "creatorBalance": "1000000000",
+  "workflowReport": {
+    "tx": "0x5b8ff435aafb66b1bb72e1e4cf1983ae937b1d43201df3b67828c329e4a45d15",
+    "digest": "0x01d15511b389813d38b806ea988a94a7a9ff78fb94c9f590249a8684e552d428",
+    "videos": 1,
+    "contradictions": 0,
+    "note": "CRE simulate --broadcast through the mock forwarder, reading one public test video."
+  }
+}

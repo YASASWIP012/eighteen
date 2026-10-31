@@ -1,4 +1,5 @@
 import {
+  bytesToHex,
   consensusIdenticalAggregation,
   cre,
   getNetwork,
@@ -8,6 +9,7 @@ import {
   prepareReportRequest,
   type Runtime,
   text,
+  TxStatus,
 } from "@chainlink/cre-sdk";
 import { encodeAbiParameters, keccak256, stringToHex } from "viem";
 import { z } from "zod";
@@ -81,9 +83,22 @@ export const onSchedule = (runtime: Runtime<Config>): string => {
   );
 
   const report = runtime.report(prepareReportRequest(payload)).result();
-  new cre.capabilities.EVMClient(network.chainSelector.selector)
-    .writeReport(runtime, { receiver: config.registryAddress, report })
+  const reply = new cre.capabilities.EVMClient(network.chainSelector.selector)
+    .writeReport(runtime, {
+      receiver: config.registryAddress,
+      report,
+      gasConfig: { gasLimit: "500000" },
+    })
     .result();
+
+  // A write can fail without throwing, so a seal only counts when the chain accepted it.
+  runtime.log(
+    `Write: tx=${String(reply.txStatus)} receiver=${String(reply.receiverContractExecutionStatus)} ` +
+      `hash=${reply.txHash ? bytesToHex(reply.txHash) : "none"} ${reply.errorMessage ?? ""}`,
+  );
+  if (reply.txStatus !== TxStatus.SUCCESS) {
+    throw new Error(`Report write failed: ${reply.errorMessage ?? reply.txStatus}`);
+  }
 
   runtime.log(`Sealed ${observation.videos} videos, ${observation.contradictions} contradictions`);
   return hexToBase64(observation.digest);
