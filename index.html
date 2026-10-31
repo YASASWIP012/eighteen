@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Eighteen</title>
+    <style>
+      :root { --bg: #fbfaf7; --ink: #1d1c1a; --muted: #68645c; --line: #dcd8cf; --accent: #1f5f4a; }
+      @media (prefers-color-scheme: dark) {
+        :root { --bg: #181716; --ink: #eeebe4; --muted: #a29d93; --line: #39362f; --accent: #7cc4a8; }
+      }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.5 system-ui, sans-serif; }
+      main { max-width: 640px; margin: 0 auto; padding: 32px 16px 64px; }
+      h1 { font-size: 28px; margin: 0 0 8px; }
+      p { margin: 0 0 16px; color: var(--muted); }
+      label { display: grid; grid-template-columns: 1fr 160px; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+      input, select { width: 100%; padding: 6px 8px; font: inherit; color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 6px; }
+      .result { margin: 24px 0 16px; }
+      .big { font-size: 36px; font-weight: 600; margin: 0; color: var(--ink); }
+      button { padding: 10px 16px; font: inherit; color: var(--bg); background: var(--accent); border: 0; border-radius: 6px; cursor: pointer; }
+      button:disabled { opacity: 0.6; }
+      #outcome { margin-top: 16px; color: var(--ink); min-height: 72px; }
+      small { display: block; color: var(--muted); margin-top: 24px; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>Eighteen</h1>
+      <p>Can a family prove it set aside what a child is owed, without showing anyone the child's income?</p>
+
+      <label>State
+        <select id="state"><option value="MN">Minnesota</option><option value="CA">California</option></select>
+      </label>
+      <label>Gross earnings for the period ($)<input id="gross" type="number" min="0" step="0.01" value="20000" /></label>
+      <label>Share of paid content with this child (%)<input id="content" type="number" min="0" max="100" step="0.01" value="50" /></label>
+      <label>Children sharing the segment<input id="minors" type="number" min="1" max="20" value="1" /></label>
+      <label>Child's age<input id="age" type="number" min="0" max="17" value="15" /></label>
+      <label>Deposited in the child's trust ($)<input id="deposit" type="number" min="0" step="0.01" value="5000" /></label>
+
+      <div class="result">
+        <p>Owed under this statute</p>
+        <p class="big" id="owed"></p>
+        <p id="covered"></p>
+        <p id="gap"></p>
+        <p id="flags"></p>
+        <p id="citation"></p>
+      </div>
+
+      <button id="prove">Generate proof</button>
+      <p id="outcome" aria-live="polite"></p>
+
+      <small>All figures here are sample values typed by you. Nothing leaves this page. This is a prototype and not legal advice. California rules come from a law-firm summary until the code text has been read.</small>
+    </main>
+    <script type="module" src="app.js"></script>
+  </body>
+</html>
