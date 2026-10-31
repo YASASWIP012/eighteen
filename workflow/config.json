@@ -1,0 +1,8 @@
+{
+  "schedule": "0 0 * * * *",
+  "videoIds": ["REPLACE_WITH_VIDEO_ID"],
+  "chainSelectorName": "ethereum-testnet-sepolia",
+  "registryAddress": "0x0000000000000000000000000000000000000000",
+  "channelRef": "demo-channel",
+  "declarations": []
+}
